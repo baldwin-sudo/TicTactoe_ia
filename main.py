@@ -22,8 +22,8 @@ SQUARE_HEIGHT=(HEIGHT_GAME-50)//3
 GAP=7
 FONT_size=60
 FONT = pygame.font.Font(None,FONT_size )
-
 DEFAULT_GRID=[['' for _ in range(COLS)] for _ in range(ROWS)]
+
 class Game :
     def __init__(self) :
         self.display=pygame.display      
@@ -48,6 +48,36 @@ class Game :
         pygame.draw.rect(self.surface,RED,self.ia_move)
         self.ia_move.write(self.surface,FONT,35,WHITE)
         self.display.flip()   
+    
+    def get_winning_line_coordinates(self, winning_line):
+    # Get the Rect objects for the start and end points of the winning line
+        start_rect = self.tictactoe.rects[winning_line[0][0]][winning_line[0][1]]
+        end_rect = self.tictactoe.rects[winning_line[1][0]][winning_line[1][1]]
+
+    # Get the center points of the Rect objects
+        start_screen = start_rect.center
+        end_screen = end_rect.center
+
+        return start_screen, end_screen
+    def draw_winning_line(self, start, end):
+        pygame.draw.line(self.surface, RED, start, end, 3)
+    def check_win(self):
+        self.board=self.tictactoe.grid
+    # Check rows
+        for i in range(3):
+            if self.board[i][0] == self.board[i][1] == self.board[i][2] != '':
+             return True, [(i, 0), (i, 2)]
+    # Check columns
+        for i in range(3):
+            if self.board[0][i] == self.board[1][i] == self.board[2][i] != '':
+                return True, [(0, i), (2, i)]
+    # Check diagonals
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != '':
+            return True, [(0, 0), (2, 2)]
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] !='':
+            return True, [(0, 2), (2, 0)]
+    # No winner
+        return False, []
     def run(self):
         #set initial color
         
@@ -58,8 +88,16 @@ class Game :
             
         
             self.tictactoe.draw_game(self.surface)  # Draw the Tic Tac Toe board
+            winner, winning_line = self.check_win()
+            if winner:
+                start, end = self.get_winning_line_coordinates(winning_line)
+                self.draw_winning_line(start, end)
+                
+                self.display.flip()  # Update the display
             self.display.flip()  # Update the display
+            
             for event in pygame.event.get():
+                
                 if event.type==pygame.QUIT:
                     running=False
                     print('Game Session ended...')
@@ -76,6 +114,10 @@ class Game :
                     else :
                         if self.start.collidepoint(Xmouse,Ymouse):
                             self.tictactoe.reset()
+                            # Create a pygame.Rect object representing the area to clear
+                            area_to_clear = pygame.Rect(0, 0, WIDTH_GAME, HEIGHT_GAME)
+                            # Fill the area with the specified color
+                            self.surface.fill((0, 0, 0), area_to_clear)
                             print('Game Restarted')
                             self.ia_agent=ia_agent(self.tictactoe.current_player)
                         elif self.ia_move.collidepoint(Xmouse,Ymouse):
