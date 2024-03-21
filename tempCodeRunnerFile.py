@@ -1,0 +1,1 @@
+self.tictactoe.current_player

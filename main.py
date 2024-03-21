@@ -43,7 +43,7 @@ class Game :
         # the new game against ia button:
         
         # the ia move button :
-        self.ia_move =LabeledRect((x_coord+30,50+200),(150,30),label="IA Game")
+        self.ia_move =LabeledRect((x_coord+30,50+200),(150,30),label="IA move")
         
         pygame.draw.rect(self.surface,RED,self.ia_move)
         self.ia_move.write(self.surface,FONT,35,WHITE)

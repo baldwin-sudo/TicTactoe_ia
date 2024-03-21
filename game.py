@@ -281,7 +281,7 @@ class ia_agent:
     def minimax(self, node, depth, is_maximizing):
         #Base case
         if node.isTerminal() or depth==0 :
-            return self.evaluate3(node)
+            return self.evaluate(node)
         else :
         # if the node represents a state  whene the AI is to play( MAX NODE):
             # the node.player contains the player that made the move
